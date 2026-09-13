@@ -88,6 +88,11 @@ export const serviceGroups: ServiceGroup[] = [
           "Website copy, blog content, and brand identity that make your business memorable and credible.",
       },
       {
+        title: "AI Ad & Video Generation",
+        description:
+          "Hyperrealistic product shots, animated explainers, and short-form video ads generated with AI — produced in days instead of weeks, and cut for the platform they'll actually run on.",
+      },
+      {
         title: "Marketing Analytics & CRO",
         description:
           "Dashboards, attribution tracking, and conversion rate optimization so you know what's actually working.",
