@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { serviceGroups } from "@/lib/nav";
+import { serviceGroups } from "@/lib/services";
 
 const stats = [
   { label: "Years in Business", value: "10+" },
@@ -72,10 +72,10 @@ export default function Home() {
               <h3 className="text-xl font-semibold">{group.title}</h3>
               <p className="mt-3 text-sm text-foreground/60">{group.blurb}</p>
               <ul className="mt-6 space-y-3">
-                {group.items.map((item) => (
-                  <li key={item} className="flex items-start gap-3 text-sm text-foreground/80">
+                {group.services.map((service) => (
+                  <li key={service.title} className="flex items-start gap-3 text-sm text-foreground/80">
                     <span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-accent" />
-                    {item}
+                    {service.title}
                   </li>
                 ))}
               </ul>
