@@ -5,24 +5,41 @@ import Image from "next/image";
  * based on Tailwind's `dark:` variant, driven by next-themes' class
  * strategy (see ThemeProvider in layout.tsx).
  *
- * Replace /public/logos/logo-light.svg and /public/logos/logo-dark.svg
- * with the real brand assets when available — same file names, same spot.
+ * Uses the wordmark-only crop (no tagline) for compact placements like
+ * the header/footer — see logo-light-mark.png / logo-dark-mark.png.
+ * The full lockup with the "UNDO ORDINARY. REDO BRILLIANT." tagline
+ * lives at logo-light.png / logo-dark.png for larger placements.
  */
-export function Logo({ className = "" }: { className?: string }) {
+const ASPECT_RATIO = 1077 / 166;
+
+export function Logo({
+  className = "",
+  height = 36,
+}: {
+  className?: string;
+  height?: number;
+}) {
+  const width = Math.round(height * ASPECT_RATIO);
+
   return (
-    <span className={`relative inline-block h-9 w-[118px] ${className}`}>
+    <span
+      className={`relative inline-block ${className}`}
+      style={{ height, width }}
+    >
       <Image
-        src="/logos/logo-light.svg"
+        src="/logos/logo-light-mark.png"
         alt="CTRL AZ"
         fill
         priority
+        sizes={`${width}px`}
         className="object-contain object-left dark:hidden"
       />
       <Image
-        src="/logos/logo-dark.svg"
+        src="/logos/logo-dark-mark.png"
         alt="CTRL AZ"
         fill
         priority
+        sizes={`${width}px`}
         className="hidden object-contain object-left dark:block"
       />
     </span>
