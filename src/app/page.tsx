@@ -2,8 +2,8 @@ import { Button } from "@/components/ui/button";
 import { serviceGroups } from "@/lib/services";
 
 const stats = [
-  { label: "Founded", value: "2025" },
-  { label: "Clients Onboarded", value: "20+" },
+  { label: "Founded", value: "Feb 2026" },
+  { label: "Clients Served", value: "4" },
   { label: "Support Availability", value: "24/7" },
   { label: "Years Combined Team Experience", value: "15+" },
 ];

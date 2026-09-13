@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 export const metadata: Metadata = {
   title: "About Us",
   description:
-    "CTRL AZ is an IT and digital marketing services company helping businesses run reliably and grow predictably. Learn about our story, values, and team.",
+    "CTRL AZ is an IT and digital marketing services company helping businesses run reliably and grow predictably. Learn about our story and values.",
 };
 
 const values = [
@@ -26,34 +26,11 @@ const values = [
   },
 ];
 
-const team = [
-  {
-    name: "Aarav Shah",
-    role: "Founder & CEO",
-    bio: "15+ years across IT infrastructure and growth marketing at other companies. Founded CTRL AZ in 2025 to give businesses one accountable partner instead of five disconnected vendors.",
-  },
-  {
-    name: "Meera Nair",
-    role: "Head of IT Services",
-    bio: "Leads managed IT, cloud migration, and cybersecurity engagements. Previously ran infrastructure for a mid-size fintech.",
-  },
-  {
-    name: "Rohan Verma",
-    role: "Head of Digital Marketing",
-    bio: "Oversees SEO, paid media, and content strategy. Obsessed with attribution — if it can't be measured, it doesn't ship.",
-  },
-  {
-    name: "Priya Iyer",
-    role: "Client Success Lead",
-    bio: "Your first call when something needs to change. Keeps every engagement on track from kickoff to renewal.",
-  },
-];
-
 const milestones = [
-  { year: "Sep 2025", desc: "CTRL AZ founded to bring IT and digital marketing under one accountable team." },
-  { year: "Dec 2025", desc: "Onboarded our first cohort of clients across managed IT and SEO." },
-  { year: "Mar 2026", desc: "Digital marketing team expanded to cover paid media and full-funnel content." },
-  { year: "Today", desc: "Growing steadily, one client relationship at a time." },
+  { year: "Feb 2026", desc: "CTRL AZ founded to bring IT and digital marketing under one accountable team." },
+  { year: "Apr 2026", desc: "Onboarded our first clients across managed IT and SEO." },
+  { year: "Jul 2026", desc: "Expanded into paid media and full-funnel digital marketing." },
+  { year: "Today", desc: "4 clients served and growing, one relationship at a time." },
 ];
 
 export default function AboutPage() {
@@ -83,16 +60,18 @@ export default function AboutPage() {
           <div>
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">Our Story</h2>
             <p className="mt-4 text-foreground/70">
-              CTRL AZ was founded in 2025 after years of watching businesses
-              juggle an IT vendor and a marketing agency that never talked
-              to each other — leaving the business owner stuck translating
-              between the two. We built CTRL AZ to close that gap from day
-              one, with a single senior team accountable for both.
+              CTRL AZ was founded in February 2026 to solve a problem we
+              kept seeing: businesses stuck juggling an IT vendor and a
+              marketing agency that never talked to each other, leaving the
+              business owner stuck translating between the two. We built
+              CTRL AZ to close that gap from day one, with a single team
+              accountable for both.
             </p>
             <p className="mt-4 text-foreground/70">
-              We&apos;re a young company, and we treat that as an advantage:
+              We&apos;re a new company, and we treat that as an advantage:
               no legacy processes to unwind, no bloated account structures —
-              just a small team that stays close to every client we take on.
+              just a small, senior team that stays close to every client we
+              take on.
             </p>
           </div>
           <div>
@@ -107,12 +86,12 @@ export default function AboutPage() {
             <div className="mt-8 rounded-2xl border border-foreground/10 bg-surface p-6">
               <dl className="grid grid-cols-2 gap-6 text-center">
                 <div>
-                  <dt className="text-3xl font-bold text-accent">2025</dt>
+                  <dt className="text-3xl font-bold text-accent">Feb 2026</dt>
                   <dd className="mt-1 text-sm text-foreground/60">Founded</dd>
                 </div>
                 <div>
-                  <dt className="text-3xl font-bold text-accent">20+</dt>
-                  <dd className="mt-1 text-sm text-foreground/60">Clients Onboarded</dd>
+                  <dt className="text-3xl font-bold text-accent">4</dt>
+                  <dd className="mt-1 text-sm text-foreground/60">Clients Served</dd>
                 </div>
                 <div>
                   <dt className="text-3xl font-bold text-accent">24/7</dt>
@@ -150,7 +129,7 @@ export default function AboutPage() {
 
       {/* Timeline */}
       <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Our first year</h2>
+        <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Our journey so far</h2>
         <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {milestones.map((m) => (
             <div key={m.year} className="border-l-2 border-accent pl-4">
@@ -158,37 +137,6 @@ export default function AboutPage() {
               <p className="mt-2 text-sm text-foreground/60">{m.desc}</p>
             </div>
           ))}
-        </div>
-      </section>
-
-      {/* Team */}
-      <section className="border-t border-foreground/10 bg-surface">
-        <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8">
-          <div className="max-w-2xl">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Meet the team</h2>
-            <p className="mt-4 text-foreground/60">
-              A small team that stays close to every engagement — no account
-              handoffs to people you've never spoken with.
-            </p>
-          </div>
-          <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {team.map((member) => (
-              <div key={member.name}>
-                <div
-                  className="flex h-32 w-32 items-center justify-center rounded-full bg-accent/10 text-2xl font-bold text-accent"
-                  aria-hidden="true"
-                >
-                  {member.name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")}
-                </div>
-                <h3 className="mt-4 text-lg font-semibold">{member.name}</h3>
-                <p className="text-sm font-medium text-accent">{member.role}</p>
-                <p className="mt-2 text-sm text-foreground/60">{member.bio}</p>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
