@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { CONTACT_EMAIL } from "@/lib/contact-info";
+import { insertSubmission, markEmailSent } from "@/lib/db";
 
 export const runtime = "nodejs";
 
@@ -70,24 +71,33 @@ export async function POST(request: Request) {
     );
   }
 
+  // Step 1 — save to the database. This is the durable source of truth
+  // and does not depend on any external service being configured, so a
+  // visitor's submission is never lost even if email sending below
+  // fails or isn't set up yet.
+  let submissionId: number;
+  try {
+    submissionId = insertSubmission({ name, email, phone, service, message });
+  } catch (err) {
+    console.error("[contact] Failed to save submission to database:", err);
+    return NextResponse.json(
+      { error: "Something went wrong saving your message. Please try again." },
+      { status: 500 }
+    );
+  }
+
+  // Step 2 — best-effort email notification. If Resend isn't
+  // configured or the send fails, we log it but still tell the visitor
+  // their message was received, since it's already safely stored.
   const apiKey = process.env.RESEND_API_KEY;
   const fromAddress = process.env.CONTACT_FROM_EMAIL;
 
   if (!apiKey || !fromAddress) {
-    // Not configured yet — fail loudly in server logs so this doesn't
-    // silently swallow real leads once the site is live.
-    console.error(
-      "[contact] RESEND_API_KEY or CONTACT_FROM_EMAIL is not set — cannot send email."
+    console.warn(
+      `[contact] Submission #${submissionId} saved, but RESEND_API_KEY/CONTACT_FROM_EMAIL ` +
+        "isn't set so no email notification was sent. View it at /admin/submissions."
     );
-    return NextResponse.json(
-      {
-        error:
-          "The contact form isn't fully configured yet. Please reach us directly at " +
-          CONTACT_EMAIL +
-          " in the meantime.",
-      },
-      { status: 500 }
-    );
+    return NextResponse.json({ ok: true });
   }
 
   try {
@@ -109,19 +119,16 @@ export async function POST(request: Request) {
     });
 
     if (error) {
-      console.error("[contact] Resend error:", error);
-      return NextResponse.json(
-        { error: "Something went wrong sending your message. Please try again." },
-        { status: 502 }
-      );
+      console.error(`[contact] Submission #${submissionId} saved, but Resend error:`, error);
+    } else {
+      markEmailSent(submissionId);
     }
-
-    return NextResponse.json({ ok: true });
   } catch (err) {
-    console.error("[contact] Unexpected error:", err);
-    return NextResponse.json(
-      { error: "Something went wrong sending your message. Please try again." },
-      { status: 500 }
-    );
+    console.error(`[contact] Submission #${submissionId} saved, but email send threw:`, err);
   }
+
+  // Always report success to the visitor once the submission is saved —
+  // email delivery is a bonus notification, not something they should
+  // see fail for.
+  return NextResponse.json({ ok: true });
 }
