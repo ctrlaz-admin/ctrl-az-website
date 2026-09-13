@@ -2,10 +2,10 @@ import { Button } from "@/components/ui/button";
 import { serviceGroups } from "@/lib/services";
 
 const stats = [
-  { label: "Years in Business", value: "10+" },
-  { label: "Clients Served", value: "150+" },
+  { label: "Founded", value: "2025" },
+  { label: "Clients Onboarded", value: "20+" },
   { label: "Support Availability", value: "24/7" },
-  { label: "Client Retention", value: "95%" },
+  { label: "Years Combined Team Experience", value: "15+" },
 ];
 
 const process = [

@@ -30,7 +30,7 @@ const team = [
   {
     name: "Aarav Shah",
     role: "Founder & CEO",
-    bio: "15+ years across IT infrastructure and growth marketing. Started CTRL AZ to give businesses one accountable partner instead of five disconnected vendors.",
+    bio: "15+ years across IT infrastructure and growth marketing at other companies. Founded CTRL AZ in 2025 to give businesses one accountable partner instead of five disconnected vendors.",
   },
   {
     name: "Meera Nair",
@@ -50,10 +50,10 @@ const team = [
 ];
 
 const milestones = [
-  { year: "2015", desc: "CTRL AZ founded as a two-person IT consultancy." },
-  { year: "2018", desc: "Digital marketing division launched after repeated client requests." },
-  { year: "2021", desc: "Crossed 100 active clients across IT and marketing services." },
-  { year: "2024", desc: "Opened a dedicated cybersecurity and compliance practice." },
+  { year: "Sep 2025", desc: "CTRL AZ founded to bring IT and digital marketing under one accountable team." },
+  { year: "Dec 2025", desc: "Onboarded our first cohort of clients across managed IT and SEO." },
+  { year: "Mar 2026", desc: "Digital marketing team expanded to cover paid media and full-funnel content." },
+  { year: "Today", desc: "Growing steadily, one client relationship at a time." },
 ];
 
 export default function AboutPage() {
@@ -83,17 +83,16 @@ export default function AboutPage() {
           <div>
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">Our Story</h2>
             <p className="mt-4 text-foreground/70">
-              CTRL AZ started as a small IT consultancy helping local
-              businesses keep their systems running. As clients grew, they
-              kept asking for help with their websites, their visibility on
-              Google, and their marketing spend — so we built that
-              capability in-house rather than handing clients off to a
-              separate agency.
+              CTRL AZ was founded in 2025 after years of watching businesses
+              juggle an IT vendor and a marketing agency that never talked
+              to each other — leaving the business owner stuck translating
+              between the two. We built CTRL AZ to close that gap from day
+              one, with a single senior team accountable for both.
             </p>
             <p className="mt-4 text-foreground/70">
-              Today we work with businesses across industries, handling
-              everything from day-to-day IT support to full-funnel digital
-              marketing, all under one team that's accountable for results.
+              We&apos;re a young company, and we treat that as an advantage:
+              no legacy processes to unwind, no bloated account structures —
+              just a small team that stays close to every client we take on.
             </p>
           </div>
           <div>
@@ -108,20 +107,20 @@ export default function AboutPage() {
             <div className="mt-8 rounded-2xl border border-foreground/10 bg-surface p-6">
               <dl className="grid grid-cols-2 gap-6 text-center">
                 <div>
-                  <dt className="text-3xl font-bold text-accent">10+</dt>
-                  <dd className="mt-1 text-sm text-foreground/60">Years in Business</dd>
+                  <dt className="text-3xl font-bold text-accent">2025</dt>
+                  <dd className="mt-1 text-sm text-foreground/60">Founded</dd>
                 </div>
                 <div>
-                  <dt className="text-3xl font-bold text-accent">150+</dt>
-                  <dd className="mt-1 text-sm text-foreground/60">Clients Served</dd>
+                  <dt className="text-3xl font-bold text-accent">20+</dt>
+                  <dd className="mt-1 text-sm text-foreground/60">Clients Onboarded</dd>
                 </div>
                 <div>
                   <dt className="text-3xl font-bold text-accent">24/7</dt>
                   <dd className="mt-1 text-sm text-foreground/60">Support Availability</dd>
                 </div>
                 <div>
-                  <dt className="text-3xl font-bold text-accent">95%</dt>
-                  <dd className="mt-1 text-sm text-foreground/60">Client Retention</dd>
+                  <dt className="text-3xl font-bold text-accent">15+</dt>
+                  <dd className="mt-1 text-sm text-foreground/60">Years Combined Team Experience</dd>
                 </div>
               </dl>
             </div>
@@ -151,7 +150,7 @@ export default function AboutPage() {
 
       {/* Timeline */}
       <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Where we've been</h2>
+        <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Our first year</h2>
         <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {milestones.map((m) => (
             <div key={m.year} className="border-l-2 border-accent pl-4">
