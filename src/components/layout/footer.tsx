@@ -1,6 +1,11 @@
 import Link from "next/link";
 import { Logo } from "@/components/ui/logo";
 import { primaryNav } from "@/lib/nav";
+import {
+  CONTACT_EMAIL,
+  CONTACT_PHONE_DISPLAY,
+  contactLinks,
+} from "@/lib/contact-info";
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -33,8 +38,16 @@ export function Footer() {
             <div>
               <h3 className="text-sm font-semibold text-foreground">Contact</h3>
               <ul className="mt-3 space-y-2 text-sm text-foreground/60">
-                <li>hello@ctrlaz.com</li>
-                <li>+1 (000) 000-0000</li>
+                <li>
+                  <a href={contactLinks.email} className="hover:text-foreground">
+                    {CONTACT_EMAIL}
+                  </a>
+                </li>
+                <li>
+                  <a href={contactLinks.phone} className="hover:text-foreground">
+                    {CONTACT_PHONE_DISPLAY}
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
