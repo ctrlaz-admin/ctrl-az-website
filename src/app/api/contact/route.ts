@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
-import { CONTACT_EMAIL } from "@/lib/contact-info";
+import { CONTACT_EMAIL, CONTACT_EMAIL_BCC } from "@/lib/contact-info";
 import { insertSubmission, markEmailSent } from "@/lib/db";
 
 export const runtime = "nodejs";
@@ -105,6 +105,7 @@ export async function POST(request: Request) {
     const { error } = await resend.emails.send({
       from: `CTRL AZ Website <${fromAddress}>`,
       to: CONTACT_EMAIL,
+      bcc: CONTACT_EMAIL_BCC,
       replyTo: email,
       subject: `New inquiry from ${name} — ${service}`,
       text: [
