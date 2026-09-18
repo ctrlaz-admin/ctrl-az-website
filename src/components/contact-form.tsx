@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { CONTACT_EMAIL_BCC } from "@/lib/contact-info";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
@@ -39,7 +38,6 @@ async function sendEmailNotification(payload: {
         access_key: accessKey,
         subject: `New inquiry from ${payload.name} — ${payload.service}`,
         from_name: "CTRL AZ Website",
-        cc: CONTACT_EMAIL_BCC,
         replyto: payload.email,
         ...payload,
       }),
