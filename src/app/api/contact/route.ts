@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import { Resend } from "resend";
-import { CONTACT_EMAIL, CONTACT_EMAIL_BCC } from "@/lib/contact-info";
+import { CONTACT_EMAIL_BCC } from "@/lib/contact-info";
 import { insertSubmission, markEmailSent } from "@/lib/db";
+
+const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
 
 export const runtime = "nodejs";
 
@@ -86,41 +87,44 @@ export async function POST(request: Request) {
     );
   }
 
-  // Step 2 — best-effort email notification. If Resend isn't
+  // Step 2 — best-effort email notification via Web3Forms. If it isn't
   // configured or the send fails, we log it but still tell the visitor
   // their message was received, since it's already safely stored.
-  const apiKey = process.env.RESEND_API_KEY;
-  const fromAddress = process.env.CONTACT_FROM_EMAIL;
+  const accessKey = process.env.WEB3FORMS_ACCESS_KEY;
 
-  if (!apiKey || !fromAddress) {
+  if (!accessKey) {
     console.warn(
-      `[contact] Submission #${submissionId} saved, but RESEND_API_KEY/CONTACT_FROM_EMAIL ` +
+      `[contact] Submission #${submissionId} saved, but WEB3FORMS_ACCESS_KEY ` +
         "isn't set so no email notification was sent. View it at /admin/submissions."
     );
     return NextResponse.json({ ok: true });
   }
 
   try {
-    const resend = new Resend(apiKey);
-    const { error } = await resend.emails.send({
-      from: `CTRL AZ Website <${fromAddress}>`,
-      to: CONTACT_EMAIL,
-      bcc: CONTACT_EMAIL_BCC,
-      replyTo: email,
-      subject: `New inquiry from ${name} — ${service}`,
-      text: [
-        `Name: ${name}`,
-        `Email: ${email}`,
-        `Phone: ${phone || "Not provided"}`,
-        `Service interested in: ${service}`,
-        "",
-        "Message:",
+    const res = await fetch(WEB3FORMS_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        access_key: accessKey,
+        subject: `New inquiry from ${name} — ${service}`,
+        from_name: "CTRL AZ Website",
+        // Web3Forms sends to whatever address the access key is bound
+        // to on web3forms.com (should be set to CONTACT_EMAIL there);
+        // cc adds the internal BCC recipient, and replyto lets a reply
+        // go straight to the visitor.
+        cc: CONTACT_EMAIL_BCC,
+        replyto: email,
+        name,
+        email,
+        phone: phone || "Not provided",
+        service,
         message,
-      ].join("\n"),
+      }),
     });
+    const result = await res.json();
 
-    if (error) {
-      console.error(`[contact] Submission #${submissionId} saved, but Resend error:`, error);
+    if (!res.ok || !result.success) {
+      console.error(`[contact] Submission #${submissionId} saved, but Web3Forms error:`, result);
     } else {
       markEmailSent(submissionId);
     }
