@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { CONTACT_EMAIL_BCC } from "@/lib/contact-info";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
@@ -10,6 +11,45 @@ const services = [
   "Both / Not sure yet",
   "Something else",
 ];
+
+const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
+
+// Web3Forms' free tier only accepts submissions made directly from
+// the browser (server-to-server calls need a paid plan), which is
+// why this call lives here instead of in the /api/contact route —
+// see that route's comment for details. NEXT_PUBLIC_ vars are bundled
+// into client JS by design; Web3Forms access keys are meant to be
+// public (they can be domain-restricted in the web3forms.com
+// dashboard), unlike a real secret API key.
+async function sendEmailNotification(payload: {
+  name: string;
+  email: string;
+  phone: string;
+  service: string;
+  message: string;
+}) {
+  const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
+  if (!accessKey) return false;
+
+  try {
+    const res = await fetch(WEB3FORMS_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        access_key: accessKey,
+        subject: `New inquiry from ${payload.name} — ${payload.service}`,
+        from_name: "CTRL AZ Website",
+        cc: CONTACT_EMAIL_BCC,
+        replyto: payload.email,
+        ...payload,
+      }),
+    });
+    const result = await res.json();
+    return res.ok && result.success === true;
+  } catch {
+    return false;
+  }
+}
 
 export function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
@@ -45,8 +85,30 @@ export function ContactForm() {
         return;
       }
 
+      // The submission is safely saved at this point — that's what
+      // determines success for the visitor. Email notification is a
+      // best-effort bonus on top, so its outcome never blocks the
+      // success state below.
       setStatus("success");
       form.reset();
+
+      const emailed = await sendEmailNotification({
+        name: payload.name,
+        email: payload.email,
+        phone: payload.phone || "Not provided",
+        service: payload.service,
+        message: payload.message,
+      });
+
+      if (emailed && result.id) {
+        fetch("/api/contact/mark-sent", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: result.id }),
+        }).catch(() => {
+          // Non-critical bookkeeping — the submission itself is already saved.
+        });
+      }
     } catch {
       setStatus("error");
       setErrorMessage("Network error — please check your connection and try again.");

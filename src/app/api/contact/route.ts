@@ -1,10 +1,14 @@
 import { NextResponse } from "next/server";
-import { CONTACT_EMAIL_BCC } from "@/lib/contact-info";
-import { insertSubmission, markEmailSent } from "@/lib/db";
-
-const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
+import { insertSubmission } from "@/lib/db";
 
 export const runtime = "nodejs";
+
+// Note: Web3Forms' free tier only accepts submissions made directly
+// from the browser (their API 403s server-to-server calls unless
+// you're on a paid plan) — so that call lives client-side in
+// src/components/contact-form.tsx, not here. This route's only job is
+// validating and durably saving the submission; see markSubmissionEmailed()
+// in @/lib/db for how the "email sent" flag gets set afterward.
 
 type ContactPayload = {
   name?: string;
@@ -72,10 +76,12 @@ export async function POST(request: Request) {
     );
   }
 
-  // Step 1 — save to the database. This is the durable source of truth
-  // and does not depend on any external service being configured, so a
-  // visitor's submission is never lost even if email sending below
-  // fails or isn't set up yet.
+  // Save to the database — this is the durable source of truth and
+  // does not depend on any external service, so a visitor's
+  // submission is never lost even if the client-side Web3Forms email
+  // step (see contact-form.tsx) fails or is unconfigured. We return
+  // the row id so the client can mark it "emailed" after Web3Forms
+  // confirms delivery.
   let submissionId: number;
   try {
     submissionId = insertSubmission({ name, email, phone, service, message });
@@ -87,53 +93,5 @@ export async function POST(request: Request) {
     );
   }
 
-  // Step 2 — best-effort email notification via Web3Forms. If it isn't
-  // configured or the send fails, we log it but still tell the visitor
-  // their message was received, since it's already safely stored.
-  const accessKey = process.env.WEB3FORMS_ACCESS_KEY;
-
-  if (!accessKey) {
-    console.warn(
-      `[contact] Submission #${submissionId} saved, but WEB3FORMS_ACCESS_KEY ` +
-        "isn't set so no email notification was sent. View it at /admin/submissions."
-    );
-    return NextResponse.json({ ok: true });
-  }
-
-  try {
-    const res = await fetch(WEB3FORMS_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        access_key: accessKey,
-        subject: `New inquiry from ${name} — ${service}`,
-        from_name: "CTRL AZ Website",
-        // Web3Forms sends to whatever address the access key is bound
-        // to on web3forms.com (should be set to CONTACT_EMAIL there);
-        // cc adds the internal BCC recipient, and replyto lets a reply
-        // go straight to the visitor.
-        cc: CONTACT_EMAIL_BCC,
-        replyto: email,
-        name,
-        email,
-        phone: phone || "Not provided",
-        service,
-        message,
-      }),
-    });
-    const result = await res.json();
-
-    if (!res.ok || !result.success) {
-      console.error(`[contact] Submission #${submissionId} saved, but Web3Forms error:`, result);
-    } else {
-      markEmailSent(submissionId);
-    }
-  } catch (err) {
-    console.error(`[contact] Submission #${submissionId} saved, but email send threw:`, err);
-  }
-
-  // Always report success to the visitor once the submission is saved —
-  // email delivery is a bonus notification, not something they should
-  // see fail for.
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, id: submissionId });
 }
